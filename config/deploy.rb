@@ -5,7 +5,7 @@ set :application, "bookshelf"
 set :repo_url, "git@github.com:patorash/bookshelf.git"
 
 # Default branch is :master
-# ask :branch, `git rev-parse --abbrev-ref HEAD`.chomp
+ask :branch, `git rev-parse --abbrev-ref HEAD`.chomp
 
 # Default deploy_to directory is /var/www/my_app_name
 # set :deploy_to, "/var/www/my_app_name"
@@ -22,6 +22,7 @@ set :repo_url, "git@github.com:patorash/bookshelf.git"
 
 # Default value for :linked_files is []
 # append :linked_files, "config/database.yml", 'config/master.key'
+append :linked_files, ".env.production"
 
 # Default value for linked_dirs is []
 # append :linked_dirs, "log", "tmp/pids", "tmp/cache", "tmp/sockets", "tmp/webpacker", "public/system", "vendor", "storage"
@@ -47,3 +48,14 @@ set :rbenv_ruby, File.read('.ruby-version').strip
 set :rbenv_prefix, "RBENV_ROOT=#{fetch(:rbenv_path)} RBENV_VERSION=#{fetch(:rbenv_ruby)} #{fetch(:rbenv_path)}/bin/rbenv exec"
 set :rbenv_map_bins, %w{rake gem bundle ruby rails}
 set :rbenv_roles, :all # default value
+
+after 'deploy:publishing', 'deploy:restart'
+namespace :deploy do
+
+  desc 'upload important files'
+  task :upload do
+    on roles(:app) do |_host|
+      upload!('.env.production', "#{shared_path}/.env.production")
+    end
+  end
+end
