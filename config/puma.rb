@@ -6,8 +6,6 @@ max_threads_count = ENV.fetch("HANAMI_MAX_THREADS", 5)
 min_threads_count = ENV.fetch("HANAMI_MIN_THREADS") { max_threads_count }
 threads min_threads_count, max_threads_count
 
-daemonize true
-
 # Use the `preload_app!` method when specifying a `workers` number.
 # This directive tells Puma to first boot the application and load code
 # before forking the application. This takes advantage of Copy On Write

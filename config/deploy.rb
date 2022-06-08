@@ -26,7 +26,7 @@ append :linked_files, ".env.production"
 
 # Default value for linked_dirs is []
 # append :linked_dirs, "log", "tmp/pids", "tmp/cache", "tmp/sockets", "tmp/webpacker", "public/system", "vendor", "storage"
-append :linked_dirs, '.bundle'
+append :linked_dirs, '.bundle', 'log', 'tmp/pids'
 
 # Default value for default_env is {}
 # set :default_env, { path: "/opt/ruby/bin:$PATH" }
@@ -58,4 +58,13 @@ namespace :deploy do
       upload!('.env.production', "#{shared_path}/.env.production")
     end
   end
+
+  desc 'Restart application'
+  task :restart do
+    within current_path do
+      execute :env, "HANAMI_ENV=production", :bundle, :exec, :puma, "-C config/puma.rb"
+    end
+  end
+
+  before :started, 'deploy:upload'
 end
